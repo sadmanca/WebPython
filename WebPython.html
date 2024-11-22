@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- installing tailwindcss from cdn -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- installing pyodide version 0.19.1 -->
-  <script src="https://cdn.jsdelivr.net/pyodide/v0.19.1/full/pyodide.js"></script>
+  <!-- installing pyodide version 0.26.4 -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
   <!-- importing codemirror stylings -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.css" />
   <!-- installing codemirror.js version 5.63.3 from cdn -->
@@ -52,7 +52,7 @@
             <textarea readonly class="p-8 text-slate-200 bg-slate-900 h-full" id="output" name="output"></textarea>
         </div>
     </div>
-    <!-- Paset and Copy buttons -->
+    <!-- Paste and Copy buttons -->
     <button onclick="pasteFromClipboard()" type="button" class="mx-2 my-4 h-12 px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-700 hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 text-slate-300">Paste</button>
     <button onclick="copyToClipboard()" type="button" class="mx-2 my-4 h-12 px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-700 hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 text-slate-300">Copy</button>
     <!-- Run button to pass the code to pyodide.runPython() -->
@@ -107,7 +107,6 @@
         function pasteFromClipboard() {
             navigator.clipboard.readText()
             .then(text => {
-                editor
                 editor.setValue(text);
             })
             .catch(err => {
@@ -118,13 +117,14 @@
         // init Pyodide and show sys.version when it's loaded successfully
         async function main() {
             let pyodide = await loadPyodide({
-                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.19.1/full/",
+                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/",
             });
+            await pyodide.loadPackage(['numpy', 'matplotlib', 'pandas']);
             output.value = pyodide.runPython(`
                 import sys
                 sys.version
             `);
-            output.value += "\n" + "Python Ready !" + "\n";
+            output.value += "\n" + "Python Ready with numpy, matplotlib, and pandas!" + "\n";
             return pyodide;
         }
         // run the main function
